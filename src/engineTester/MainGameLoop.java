@@ -3,12 +3,14 @@ package engineTester;
 
 import entities.Camera;
 import entities.Entity;
+import entities.Light;
 import org.lwjgl.opengl.Display;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
+import renderEngine.OBJLoader;
 import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
@@ -91,23 +93,31 @@ public class MainGameLoop {
             20, 21, 23,
             23, 21, 22
         };
+        
+        float[] normals = {
+            1, 1, 1,
+            1, 1, 1
+        };
 
-        RawModel model = loader.loadToVAO(vertices, textureCoords, indices);
+        RawModel model = loader.loadToVAO(vertices, textureCoords, normals, indices);
+        //RawModel model = OBJLoader.loadObjModel("stall", loader);
         ModelTexture texture = new ModelTexture(loader.loadTexture("sampleTexture"));
         TexturedModel staticModel = new TexturedModel(model, texture);
-        Entity entity = new Entity(staticModel, new Vector3f(0, 0, -1), 0, 0, 0, 1);
+        Entity entity = new Entity(staticModel, new Vector3f(0, 0, -5), 0, 0, 0, 1);
+        Light light = new Light(new Vector3f(10,0,-10), new Vector3f(1,1,1));
 
         Camera camera = new Camera();
 
         while (!Display.isCloseRequested()) {
             //entity.increasePosition(0, 0, 0);
-            entity.increaseRotation(0, 0.5f, 0);
+            //entity.increaseRotation(0, 0.5f, 0);
             camera.move();
             renderer.prepare();
             shader.start();
+            shader.loadLight(light);
             shader.loadViewMatrix(camera);
             renderer.render(entity, shader);
-            shader.stop();
+            shader.stop(); 
             DisplayManager.updateDisplay();
         }
         shader.cleanUp();
