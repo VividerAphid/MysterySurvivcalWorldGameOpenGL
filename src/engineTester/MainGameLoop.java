@@ -10,6 +10,7 @@ import renderEngine.Loader;
 import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
+import renderEngine.MasterRenderer;
 import renderEngine.OBJLoader;
 import renderEngine.Renderer;
 import shaders.StaticShader;
@@ -22,7 +23,6 @@ public class MainGameLoop {
 
         Loader loader = new Loader();
         StaticShader shader = new StaticShader();
-        Renderer renderer = new Renderer(shader);
 
         //Test data     
 //        float[] vertices = {
@@ -109,38 +109,30 @@ public class MainGameLoop {
 //        };
 
         //RawModel model = loader.loadToVAO(vertices, textureCoords, normals, indices);
-        //RawModel model = OBJLoader.loadObjModel("cube", loader);
-        //ModelTexture texture = new ModelTexture(loader.loadTexture("sand"));
-        //TexturedModel staticModel = new TexturedModel(model, texture);
-        //Entity entity = new Entity(staticModel, new Vector3f(0, 0, -5), 0, 0, 0, 1);
+        RawModel model = OBJLoader.loadObjModel("simpletree-flat", loader);
+        ModelTexture texture = new ModelTexture(loader.loadTexture("sand"));
+        texture.setShineDamper(10);
+        texture.setReflectivity(1);
+        TexturedModel staticModel = new TexturedModel(model, texture);
+        Entity entity = new Entity(staticModel, new Vector3f(0, 0, -5), 0, 0, 0, 1);
         //Entity entity2 = new Entity(staticModel, new Vector3f(0, 0, -7), 0, 0, 0, 1);
         //Entity entity2 = new Entity(staticModel, new Vector3f(-5, 0, 5), 0, 0, 0, 1);
-        WorldBuilder bld = new WorldBuilder();
-        Entity[] world = bld.buildWorld(25,3,25,loader);
+        //WorldBuilder bld = new WorldBuilder();
+        //Entity[] world = bld.buildWorld(25,3,25,loader);
         //System.out.println(world.toString());
         Light light = new Light(new Vector3f(0,20,0), new Vector3f(1,1,1));
         //Light light2 = new Light(new Vector3f(10,0,-5), new Vector3f(1,1,1));
 
         Camera camera = new Camera();
 
+        MasterRenderer renderer = new MasterRenderer();
         while (!Display.isCloseRequested()) {
-            //entity.increasePosition(0, 0, 0);
-            //entity.increaseRotation(0, 0.5f, 0);
             camera.move();
-            renderer.prepare();
-            shader.start();
-            shader.loadLight(light);
-            //shader.loadLight(light2);
-            shader.loadViewMatrix(camera);
-            for(int i = 0; i<world.length; i++){
-                renderer.render(world[i], shader);
-            }
-            //renderer.render(entity, shader);
-            //renderer.render(entity2, shader);            
-            shader.stop(); 
+            renderer.processEntity(entity);
+            renderer.render(light, camera);
             DisplayManager.updateDisplay();
         }
-        shader.cleanUp();
+        renderer.cleanUp();
         loader.cleanUp();
         DisplayManager.closeDisplay();
     }

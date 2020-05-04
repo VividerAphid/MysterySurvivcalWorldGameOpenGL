@@ -24,11 +24,16 @@ public class WorldBuilder {
         List<Entity> worldList = new ArrayList<Entity>();
         
         
+        //Make Base level
         for(int z = -(depth/2); z <= (depth/2); z++){
             for(int x = -(width/2); x <= (width/2); x++){
                worldList.add(new Entity(new TexturedModel(models[0], textures[0]), new Vector3f(x, -1, z), 0, 0, 0, 1));
             }         
         }
+        
+        //Make "mountains"
+        
+        
         Entity[] world = new Entity[worldList.size()];
         for(int i = 0; i < worldList.size(); i++){
             world[i] = worldList.get(i);
