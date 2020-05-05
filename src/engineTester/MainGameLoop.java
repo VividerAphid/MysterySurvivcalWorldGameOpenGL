@@ -4,6 +4,7 @@ package engineTester;
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
+import java.util.HashSet;
 import org.lwjgl.opengl.Display;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
@@ -117,6 +118,9 @@ public class MainGameLoop {
         Entity entity = new Entity(staticModel, new Vector3f(0, 0, -5), 0, 0, 0, 1);
         Terrain terrain = new Terrain(0, 0, loader, new ModelTexture(loader.loadTexture("grass")));
         Terrain terrain2 = new Terrain(1, 0, loader, new ModelTexture(loader.loadTexture("grass")));
+        //texture.getTexture().setHasTransparency(true); ***********ENABLE WHEN READY FOR TRANSPARENCY
+        //texture..getTexture().setUseFakeLighting(true); ************ENABLE FOR LESS WEIRD LIGHTING ON TRANSPARENT TEXTURES
+
         //Entity entity2 = new Entity(staticModel, new Vector3f(0, 0, -7), 0, 0, 0, 1);
         //Entity entity2 = new Entity(staticModel, new Vector3f(-5, 0, 5), 0, 0, 0, 1);
         //WorldBuilder bld = new WorldBuilder();
